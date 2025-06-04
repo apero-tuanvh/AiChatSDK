@@ -17,10 +17,21 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import chataisdk.composeapp.generated.resources.Res
 import chataisdk.composeapp.generated.resources.compose_multiplatform
+import com.apero.service.AiChatSDK
+import com.apero.service.domain.usecase.GetTimestampUseCase
 
 @Composable
 @Preview
 fun App() {
+
+    AiChatSDK.install(
+        baseUrl = "https://api-chatbot-ai.dev.apero.vn/",
+        bundleId = "com.aichat.chatbot.aiassistant",
+        apiKey = "sk-MFBX2yDGuYZygMN97ArFIe00u8jdmaCtWzpKlDT5hd6nHGIKgN",
+        publicKey = "your-public-key",
+        isDebug = true
+    )
+
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
         Column(
@@ -34,11 +45,41 @@ fun App() {
             }
             AnimatedVisibility(showContent) {
                 val greeting = remember { Greeting().greet() }
-                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Image(painterResource(Res.drawable.compose_multiplatform), null)
                     Text("Compose: $greeting")
                 }
             }
+
+            TimestampScreen(AiChatSDK.timestampUseCase)
         }
+    }
+}
+
+@Composable
+fun TimestampScreen(getTimestampUseCase: GetTimestampUseCase) {
+    var timestamp by remember { mutableStateOf<Long?>(null) }
+    var isLoading by remember { mutableStateOf(true) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(Unit) {  // Chạy 1 lần khi Composable load
+        try {
+            isLoading = true
+            timestamp = getTimestampUseCase()
+        } catch (e: Exception) {
+            errorMessage = e.message
+        } finally {
+            isLoading = false
+        }
+    }
+
+    when {
+        isLoading -> Text("Loading...")
+        errorMessage != null -> Text("Error: $errorMessage")
+        timestamp != null -> Text("Timestamp: $timestamp")
+        else -> Text("No data")
     }
 }
