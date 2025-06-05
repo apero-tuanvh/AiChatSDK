@@ -25,8 +25,19 @@ class LocalStorage(private val settings: Settings) {
             }
         }
 
+    var deviceIdUser: String?
+        get() = settings.getStringOrNull(KEY_USER_ID)
+        set(value) {
+            if (value != null) {
+                settings.putString(KEY_USER_ID, value)
+            } else {
+                AiChatSDK.logger.e(AiChatSDK.TAG_FOR_DEBUG, "deviceIdUser is null", null)
+            }
+        }
+
     companion object {
         private const val KEY_ACCESS_TOKEN = "KEY_ACCESS_TOKEN"
         private const val KEY_REFRESH_TOKEN = "KEY_REFRESH_TOKEN"
+        private const val KEY_USER_ID = "KEY_USER_ID"
     }
 }

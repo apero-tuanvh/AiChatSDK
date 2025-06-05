@@ -21,6 +21,7 @@ object AiChatSDK {
     private var apiKey: String? = null
     private var publicKey: String? = null
     internal var isDebug: Boolean = true
+    private var applicationCode: String = "ai-virtu"
 
     internal val logger = Logger()
 
@@ -44,18 +45,24 @@ object AiChatSDK {
             ?: throw IllegalArgumentException("You need install PublicKey with AiChatSDK.install() in your application")
     }
 
+    internal fun getApplicationCode(): String {
+        return applicationCode
+    }
+
     fun install(
         baseUrl: String,
         bundleId: String,
         apiKey: String,
         publicKey: String,
-        isDebug: Boolean = true
+        isDebug: Boolean = true,
+        applicationCode: String = "ai-virtu"
     ) {
         this.baseUrl = baseUrl
         this.bundleId = bundleId
         this.apiKey = apiKey
         this.publicKey = publicKey
         this.isDebug = isDebug
+        this.applicationCode = applicationCode
     }
 
     val timestampUseCase: GetTimestampUseCase by lazy {

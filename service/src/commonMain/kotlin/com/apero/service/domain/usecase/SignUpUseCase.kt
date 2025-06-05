@@ -1,13 +1,18 @@
 package com.apero.service.domain.usecase
 
+import com.apero.service.AiChatSDK
 import com.apero.service.data.remote.model.ApiResult
+import com.apero.service.di.LocalModule
 import com.apero.service.domain.model.AuthResult
 import com.apero.service.domain.repository.AuthRepository
 
 class SignUpUseCase(
     private val repository: AuthRepository
 ) {
-    suspend operator fun invoke(referId: String, applicationCode: String): ApiResult<AuthResult> {
+    suspend operator fun invoke(
+        referId: String = LocalModule.deviceIdProvider.getOrCreateUUID(),
+        applicationCode: String = AiChatSDK.getApplicationCode()
+    ): ApiResult<AuthResult> {
         return repository.signUp(referId, applicationCode)
     }
 }

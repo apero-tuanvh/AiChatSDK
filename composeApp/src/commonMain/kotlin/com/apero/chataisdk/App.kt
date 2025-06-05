@@ -18,6 +18,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import chataisdk.composeapp.generated.resources.Res
 import chataisdk.composeapp.generated.resources.compose_multiplatform
 import com.apero.service.AiChatSDK
+import com.apero.service.data.remote.model.ApiResult
 import com.apero.service.domain.usecase.GetTimestampUseCase
 
 @Composable
