@@ -3,13 +3,19 @@ package com.apero.service.di
 import com.apero.service.AiChatSDK
 import com.apero.service.AiChatSDK.getApiKey
 import com.apero.service.AiChatSDK.getPublicKey
+import com.apero.service.data.remote.repository.AiChatRepositoryImpl
 import com.apero.service.data.remote.repository.AuthRepositoryImpl
+import com.apero.service.data.remote.repository.ConversationRepositoryImpl
 import com.apero.service.data.remote.repository.TimestampRepositoryImpl
+import com.apero.service.data.remote.service.AiChatService
+import com.apero.service.data.remote.service.AiChatServiceImpl
 import com.apero.service.data.remote.service.AuthApiService
 import com.apero.service.data.remote.service.AuthApiServiceImpl
 import com.apero.service.data.remote.service.TimestampService
 import com.apero.service.data.remote.service.TimestampServiceImpl
+import com.apero.service.domain.repository.AiChatRepository
 import com.apero.service.domain.repository.AuthRepository
+import com.apero.service.domain.repository.ConversationRepository
 import com.apero.service.domain.repository.TimestampRepository
 import com.apero.service.domain.usecase.GetTimestampUseCase
 import com.apero.service.domain.usecase.RefreshTokenUseCase
@@ -80,6 +86,18 @@ internal object NetworkModule {
 
     private val chatHttpClient by lazy {
         httpClientProvider.createChatHttpClient()
+    }
+
+    internal val aiChatService: AiChatService by lazy {
+        return@lazy AiChatServiceImpl(chatHttpClient)
+    }
+
+    internal val aiChatRepository: AiChatRepository by lazy {
+        return@lazy AiChatRepositoryImpl(aiChatService, LocalModule.fileSystem)
+    }
+
+    internal val conversationRepository: ConversationRepository by lazy {
+        return@lazy ConversationRepositoryImpl(aiChatService)
     }
 
 }

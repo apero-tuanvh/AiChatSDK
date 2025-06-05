@@ -4,6 +4,8 @@ import com.apero.service.data.local.LocalStorage
 import com.apero.service.provider.DeviceIdProvider
 import com.apero.service.provider.SignatureProvider
 import com.russhwolf.settings.Settings
+import okio.FileSystem
+import okio.SYSTEM
 
 internal object LocalModule {
     private val settings: Settings by lazy {
@@ -19,5 +21,9 @@ internal object LocalModule {
 
     internal val deviceIdProvider: DeviceIdProvider by lazy {
         return@lazy DeviceIdProvider(localStorage)
+    }
+
+    internal val fileSystem by lazy {
+        FileSystem.SYSTEM
     }
 }

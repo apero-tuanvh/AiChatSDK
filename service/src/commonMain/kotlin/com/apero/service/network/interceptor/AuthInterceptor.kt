@@ -6,7 +6,7 @@ import com.apero.service.data.remote.model.ApiResult
 import com.apero.service.data.remote.model.ErrorCode
 import com.apero.service.domain.usecase.RefreshTokenUseCase
 import com.apero.service.domain.usecase.SignUpUseCase
-import com.apero.service.handleErrorResponse
+import com.apero.service.extension.handleErrorResponse
 import com.apero.service.provider.DeviceIdProvider
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpClientPlugin

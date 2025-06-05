@@ -3,6 +3,8 @@ package com.apero.service
 import com.apero.service.data.local.LocalStorage
 import com.apero.service.di.LocalModule
 import com.apero.service.di.NetworkModule
+import com.apero.service.domain.repository.AiChatRepository
+import com.apero.service.domain.repository.ConversationRepository
 import com.apero.service.domain.usecase.GetTimestampUseCase
 import com.apero.service.domain.usecase.RefreshTokenUseCase
 import com.apero.service.domain.usecase.SignUpUseCase
@@ -20,6 +22,7 @@ object AiChatSDK {
     private var applicationCode: String = "ai-virtu"
 
     internal val logger = Logger()
+
 
     internal fun getBaseUrl(): String {
         return baseUrl
@@ -75,6 +78,14 @@ object AiChatSDK {
 
     val localStorage: LocalStorage by lazy {
         return@lazy LocalModule.localStorage
+    }
+
+    val aiChatRepository: AiChatRepository by lazy {
+        return@lazy NetworkModule.aiChatRepository
+    }
+
+    val conversationRepository: ConversationRepository by lazy {
+        return@lazy NetworkModule.conversationRepository
     }
 
 

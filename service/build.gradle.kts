@@ -74,6 +74,7 @@ kotlin {
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.multiplatform.settings)
                 implementation(libs.multiplatform.settings.no.arg)
+                implementation(libs.okio)
             }
         }
 

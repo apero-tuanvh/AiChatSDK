@@ -2,7 +2,7 @@ package com.apero.service.data.remote.service
 
 import com.apero.service.data.remote.model.ApiResult
 import com.apero.service.data.remote.model.TimestampResponseWrapper
-import com.apero.service.handleErrorResponse
+import com.apero.service.extension.handleErrorResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException

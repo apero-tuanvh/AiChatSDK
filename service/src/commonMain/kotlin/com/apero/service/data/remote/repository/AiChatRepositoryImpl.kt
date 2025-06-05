@@ -1,0 +1,104 @@
+package com.apero.service.data.remote.repository
+
+import com.apero.service.data.remote.mapper.toListStyleGenImage
+import com.apero.service.data.remote.mapper.toModel
+import com.apero.service.data.remote.model.ApiResult
+import com.apero.service.data.remote.model.request.GenImageRequest
+import com.apero.service.data.remote.service.AiChatService
+import com.apero.service.domain.model.ConversationModel
+import com.apero.service.domain.model.GenImageResult
+import com.apero.service.domain.model.GenImageStyleModel
+import com.apero.service.domain.repository.AiChatRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import okio.FileSystem
+import okio.Path
+
+class AiChatRepositoryImpl(
+    private val aiChatService: AiChatService,
+    private val fileSystem: FileSystem
+) : AiChatRepository {
+
+    private val _genImageStyleModelFlow = MutableStateFlow<List<GenImageStyleModel>>(emptyList())
+
+    override suspend fun uploadFile(
+        file: Path,
+        applicationCode: String,
+        botCode: String
+    ): ApiResult<String> {
+        val fileName = file.name
+        val fileBytes = fileSystem.read(file) {
+            readByteArray()
+        }
+        val response = aiChatService.uploadFile(
+            botCode = botCode,
+            fileName = fileName,
+            fileBytes = fileBytes,
+            applicationCode = applicationCode
+        )
+        return when (response) {
+            is ApiResult.Success -> ApiResult.Success(response.data.data.filePath)
+            is ApiResult.Error -> response
+        }
+    }
+
+    override suspend fun generateImage(
+        botCode: String,
+        request: String,
+        conversationId: String,
+        positivePrompt: String,
+        persist: Boolean
+    ): ApiResult<GenImageResult> {
+        val genImageRequest = GenImageRequest(
+            question = request,
+            persist = persist,
+            conversationId = conversationId,
+            positivePrompt = positivePrompt,
+        )
+        return when (val response = aiChatService.generateImage(botCode, genImageRequest)) {
+            is ApiResult.Success -> {
+                ApiResult.Success(response.data.toModel())
+            }
+
+            is ApiResult.Error -> {
+                response
+            }
+        }
+    }
+
+    override suspend fun updateGenImage(
+        botCode: String,
+        answerId: String,
+        isShow: Boolean
+    ): ApiResult<Boolean> {
+        return when (val response = aiChatService.updateGenImage(botCode, answerId, isShow)) {
+            is ApiResult.Success -> {
+                ApiResult.Success(response.data.data?.isShow == isShow)
+            }
+
+            is ApiResult.Error -> {
+                response
+            }
+        }
+    }
+
+    override suspend fun fetchGenImageStyleModels(botCode: String): ApiResult<List<GenImageStyleModel>> {
+        when (val response = aiChatService.getListStyleGenImage(botCode)) {
+            is ApiResult.Success -> {
+                val result = response.data.toListStyleGenImage()
+                _genImageStyleModelFlow.update { result }
+                return ApiResult.Success(result)
+            }
+
+            is ApiResult.Error -> {
+                return response
+            }
+        }
+    }
+
+    override fun getFlowGenImageStyleModel(): Flow<List<GenImageStyleModel>> {
+        return _genImageStyleModelFlow.asStateFlow()
+    }
+}

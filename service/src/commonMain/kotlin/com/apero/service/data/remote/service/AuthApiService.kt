@@ -5,7 +5,7 @@ import com.apero.service.data.remote.model.request.RefreshTokenRequest
 import com.apero.service.data.remote.model.request.SignUpRequest
 import com.apero.service.data.remote.model.response.RefreshTokenResponse
 import com.apero.service.data.remote.model.response.SignUpResponse
-import com.apero.service.safePost
+import com.apero.service.extension.safePost
 import io.ktor.client.HttpClient
 
 interface AuthApiService {
