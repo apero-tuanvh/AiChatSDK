@@ -14,4 +14,11 @@ internal actual class HttpClientFactory {
             install(NetworkModule.signatureInterceptor)
         }
     }
+
+    actual fun createChatHttpClient(): HttpClient {
+        return createBaseHttpClient(OkHttp) {
+            install(NetworkModule.signatureInterceptor)
+            install(NetworkModule.authInterceptor)
+        }
+    }
 }

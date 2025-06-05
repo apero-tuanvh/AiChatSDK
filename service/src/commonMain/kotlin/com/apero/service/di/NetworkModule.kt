@@ -15,6 +15,7 @@ import com.apero.service.domain.usecase.GetTimestampUseCase
 import com.apero.service.domain.usecase.RefreshTokenUseCase
 import com.apero.service.domain.usecase.SignUpUseCase
 import com.apero.service.network.HttpClientFactory
+import com.apero.service.network.interceptor.AuthInterceptor
 import com.apero.service.network.interceptor.SignatureInterceptor
 
 internal object NetworkModule {
@@ -28,6 +29,16 @@ internal object NetworkModule {
             publicKey = getPublicKey(),
             timestampUseCase = AiChatSDK.timestampUseCase,
             signatureProvider = LocalModule.signatureProvider
+        )
+    }
+
+    internal val authInterceptor: AuthInterceptor by lazy {
+        return@lazy AuthInterceptor(
+            localStorage = LocalModule.localStorage,
+            signUpUseCase = signupUseCase,
+            refreshTokenUseCase = refreshTokenUseCase,
+            applicationCode = AiChatSDK.getApplicationCode(),
+            deviceIdProvider = LocalModule.deviceIdProvider
         )
     }
 

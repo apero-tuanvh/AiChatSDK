@@ -3,14 +3,10 @@ package com.apero.service
 import com.apero.service.data.local.LocalStorage
 import com.apero.service.di.LocalModule
 import com.apero.service.di.NetworkModule
-import com.apero.service.di.NetworkModule.timestampRepository
 import com.apero.service.domain.usecase.GetTimestampUseCase
 import com.apero.service.domain.usecase.RefreshTokenUseCase
 import com.apero.service.domain.usecase.SignUpUseCase
 import com.apero.service.logger.Logger
-import com.apero.service.network.interceptor.SignatureInterceptor
-import com.apero.service.provider.SignatureProvider
-import com.russhwolf.settings.Settings
 
 object AiChatSDK {
 
