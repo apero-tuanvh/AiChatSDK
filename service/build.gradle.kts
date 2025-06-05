@@ -72,6 +72,8 @@ kotlin {
                 implementation(libs.ktor.server.content.negotiation)
                 implementation(libs.ktor.logging)
                 implementation(libs.kotlinx.datetime)
+                implementation(libs.multiplatform.settings)
+                implementation(libs.multiplatform.settings.no.arg)
             }
         }
 

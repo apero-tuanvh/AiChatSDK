@@ -1,4 +1,4 @@
-package com.apero.service.domain.model
+package com.apero.service.data.remote.model
 
 enum class ErrorCode(val code: String) {
     INVALID_INPUT("ERR100"),

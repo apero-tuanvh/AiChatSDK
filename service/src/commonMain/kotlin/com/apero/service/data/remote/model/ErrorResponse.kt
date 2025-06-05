@@ -1,4 +1,4 @@
-package com.apero.service.domain.model
+package com.apero.service.data.remote.model
 
 @kotlinx.serialization.Serializable
 data class ErrorResponse(

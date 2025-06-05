@@ -1,7 +1,7 @@
 package com.apero.service.provider
 
 import android.util.Base64
-import com.apero.service.domain.model.SignatureData
+import com.apero.service.data.remote.model.SignatureData
 import java.security.KeyFactory
 import java.security.NoSuchAlgorithmException
 import java.security.PublicKey

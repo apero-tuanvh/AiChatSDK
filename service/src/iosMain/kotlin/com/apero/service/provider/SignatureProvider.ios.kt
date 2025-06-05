@@ -1,6 +1,6 @@
 package com.apero.service.provider
 
-import com.apero.service.domain.model.SignatureData
+import com.apero.service.data.remote.model.SignatureData
 import io.github.vinceglb.filekit.utils.toNSData
 import io.ktor.util.decodeBase64Bytes
 import io.ktor.util.encodeBase64

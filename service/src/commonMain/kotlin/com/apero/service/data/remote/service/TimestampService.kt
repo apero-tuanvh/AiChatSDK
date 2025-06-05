@@ -1,27 +1,23 @@
 package com.apero.service.data.remote.service
 
-import com.apero.service.domain.model.ApiResult
-import com.apero.service.domain.model.ErrorCode
-import com.apero.service.domain.model.ErrorResponse
-import com.apero.service.domain.model.TimestampResponseWrapper
+import com.apero.service.data.remote.model.ApiResult
+import com.apero.service.data.remote.model.TimestampResponseWrapper
+import com.apero.service.handleErrorResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.request.get
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
 
 
 interface TimestampService {
     suspend fun getTimestamp(): ApiResult<TimestampResponseWrapper>
 }
 
-internal class TimestampServiceImpl(
+class TimestampServiceImpl(
     private val client: HttpClient
 ) : TimestampService {
     override suspend fun getTimestamp(): ApiResult<TimestampResponseWrapper> =
@@ -30,9 +26,9 @@ internal class TimestampServiceImpl(
                 val response = client.get("api/timestamp")
                 ApiResult.Success(response.body())
             } catch (e: ClientRequestException) {
-                handleErrorResponse(e.response)
+                e.response.handleErrorResponse()
             } catch (e: ServerResponseException) {
-                handleErrorResponse(e.response)
+                e.response.handleErrorResponse()
             } catch (e: Exception) {
                 ApiResult.Error(
                     message = "Network or unknown error: ${e.message}",
@@ -40,26 +36,4 @@ internal class TimestampServiceImpl(
                 )
             }
         }
-
-    private suspend fun handleErrorResponse(response: HttpResponse): ApiResult.Error {
-        val rawBody = response.bodyAsText()
-        val errorResponse = try {
-            Json.decodeFromString<ErrorResponse>(rawBody)
-        } catch (_: Exception) {
-            null
-        }
-
-        val errorCodeEnum = ErrorCode.fromCode(errorResponse?.errorCode)
-
-        val message = errorResponse?.message
-            ?: "Unknown error, HTTP code: ${response.status.value}"
-
-        return ApiResult.Error(
-            message = message,
-            code = response.status.value,
-            rawBody = rawBody,
-            errorResponse = errorResponse,
-            errorCodeEnum = errorCodeEnum
-        )
-    }
 }

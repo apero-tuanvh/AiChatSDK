@@ -1,15 +1,34 @@
 package com.apero.service.di
 
+import com.apero.service.AiChatSDK
+import com.apero.service.AiChatSDK.getApiKey
+import com.apero.service.AiChatSDK.getPublicKey
+import com.apero.service.data.remote.repository.AuthRepositoryImpl
 import com.apero.service.data.remote.repository.TimestampRepositoryImpl
+import com.apero.service.data.remote.service.AuthApiService
+import com.apero.service.data.remote.service.AuthApiServiceImpl
 import com.apero.service.data.remote.service.TimestampService
 import com.apero.service.data.remote.service.TimestampServiceImpl
+import com.apero.service.domain.repository.AuthRepository
 import com.apero.service.domain.repository.TimestampRepository
 import com.apero.service.domain.usecase.GetTimestampUseCase
+import com.apero.service.domain.usecase.RefreshTokenUseCase
+import com.apero.service.domain.usecase.SignUpUseCase
 import com.apero.service.network.HttpClientFactory
+import com.apero.service.network.interceptor.SignatureInterceptor
 
 internal object NetworkModule {
     private val httpClientProvider by lazy {
         HttpClientFactory()
+    }
+
+    internal val signatureInterceptor: SignatureInterceptor by lazy {
+        SignatureInterceptor(
+            apiKey = getApiKey(),
+            publicKey = getPublicKey(),
+            timestampUseCase = AiChatSDK.timestampUseCase,
+            signatureProvider = LocalModule.signatureProvider
+        )
     }
 
     internal val timestampHttpClient by lazy {
@@ -30,6 +49,22 @@ internal object NetworkModule {
 
     private val authHttpClient by lazy {
         httpClientProvider.createAuthHttpClient()
+    }
+
+    internal val authService: AuthApiService by lazy {
+        return@lazy AuthApiServiceImpl(authHttpClient)
+    }
+
+    internal val authRepository: AuthRepository by lazy {
+        return@lazy AuthRepositoryImpl(authService, LocalModule.localStorage)
+    }
+
+    internal val signupUseCase: SignUpUseCase by lazy {
+        return@lazy SignUpUseCase(authRepository)
+    }
+
+    internal val refreshTokenUseCase: RefreshTokenUseCase by lazy {
+        return@lazy RefreshTokenUseCase(authRepository)
     }
 
 }

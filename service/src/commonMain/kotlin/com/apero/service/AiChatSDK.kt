@@ -1,11 +1,16 @@
 package com.apero.service
 
+import com.apero.service.data.local.LocalStorage
+import com.apero.service.di.LocalModule
 import com.apero.service.di.NetworkModule
 import com.apero.service.di.NetworkModule.timestampRepository
 import com.apero.service.domain.usecase.GetTimestampUseCase
+import com.apero.service.domain.usecase.RefreshTokenUseCase
+import com.apero.service.domain.usecase.SignUpUseCase
 import com.apero.service.logger.Logger
 import com.apero.service.network.interceptor.SignatureInterceptor
 import com.apero.service.provider.SignatureProvider
+import com.russhwolf.settings.Settings
 
 object AiChatSDK {
 
@@ -19,25 +24,24 @@ object AiChatSDK {
 
     internal val logger = Logger()
 
-
     internal fun getBaseUrl(): String {
         return baseUrl
-            ?: throw IllegalArgumentException("You need install SDK with AiChatSDK.install() in your application")
+            ?: throw IllegalArgumentException("You need install BaseUrl with AiChatSDK.install() in your application")
     }
 
     internal fun getBundleId(): String {
         return bundleId
-            ?: throw IllegalArgumentException("You need install SDK with AiChatSDK.install() in your application")
+            ?: throw IllegalArgumentException("You need install BundleId with AiChatSDK.install() in your application")
     }
 
     internal fun getApiKey(): String {
         return apiKey
-            ?: throw IllegalArgumentException("You need install SDK with AiChatSDK.install() in your application")
+            ?: throw IllegalArgumentException("You need install ApiKey with AiChatSDK.install() in your application")
     }
 
     internal fun getPublicKey(): String {
         return publicKey
-            ?: throw IllegalArgumentException("You need install SDK with AiChatSDK.install() in your application")
+            ?: throw IllegalArgumentException("You need install PublicKey with AiChatSDK.install() in your application")
     }
 
     fun install(
@@ -58,14 +62,17 @@ object AiChatSDK {
         return@lazy NetworkModule.timestampUseCase
     }
 
-    private val signatureProvider: SignatureProvider by lazy {
-        return@lazy SignatureProvider()
+    val signupUseCase: SignUpUseCase by lazy {
+        return@lazy NetworkModule.signupUseCase
     }
 
-    internal val signatureInterceptor = SignatureInterceptor(
-        apiKey = getApiKey(),
-        publicKey = getPublicKey(),
-        timestampUseCase = timestampUseCase,
-        signatureProvider = signatureProvider
-    )
+    val refreshTokenUseCase: RefreshTokenUseCase by lazy {
+        return@lazy NetworkModule.refreshTokenUseCase
+    }
+
+    val localStorage: LocalStorage by lazy {
+        return@lazy LocalModule.localStorage
+    }
+
+
 }
