@@ -15,6 +15,7 @@ import kotlinx.serialization.json.Json
 
 internal expect class HttpClientFactory() {
     fun createTimeStampHttpClient(): HttpClient
+    fun createAuthHttpClient(): HttpClient
 }
 
 internal fun <T : HttpClientEngineConfig> createBaseHttpClient(

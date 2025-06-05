@@ -28,7 +28,9 @@ fun App() {
         baseUrl = "https://api-chatbot-ai.dev.apero.vn/",
         bundleId = "com.aichat.chatbot.aiassistant",
         apiKey = "sk-MFBX2yDGuYZygMN97ArFIe00u8jdmaCtWzpKlDT5hd6nHGIKgN",
-        publicKey = "your-public-key",
+        publicKey = "-----BEGIN PUBLIC KEY-----\n" +
+                "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz+zgKEmqyK5HHtvryJ3pEIjaK+gXMYw/CEBZIzRmis7pxFoHTq9eMZHwPLohKiCJKvXZdtXJltkIW8glyVmgw0Fh6apRV/pvd8VYnphz1v+5pKgDIltCrbNrLKCuxX/bo6/3Z2Gz5xsm0xyB3c3sEtdpRmUK19W2hRK46/c5PKeNbn/OD5Ike5go4gTLaFwEC8XpvxrAfyxqO7ahbJlLqkO8DUwEK7y+NhRTgu+1/n2vxSsmoynwPA18ZSsSBqC+lta+E0dxqlvbeuz736aGbu4EVvRr/WGxg6/mbvb7kfBcyz/OwSQhrjd5lAsKOpP1VVbBSxDSU0f/TecipUzIuQIDAQAB\n" +
+                "-----END PUBLIC KEY-----",
         isDebug = true
     )
 

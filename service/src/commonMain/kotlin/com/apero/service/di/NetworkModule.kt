@@ -28,4 +28,8 @@ internal object NetworkModule {
         return@lazy GetTimestampUseCase(timestampRepository)
     }
 
+    private val authHttpClient by lazy {
+        httpClientProvider.createAuthHttpClient()
+    }
+
 }

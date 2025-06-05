@@ -106,6 +106,7 @@ kotlin {
                 // on common by default and will correctly pull the iOS artifacts of any
                 // KMP dependencies declared in commonMain.
                 implementation(libs.ktor.client.darwin)
+                implementation(libs.filekit.core)
             }
         }
     }

@@ -4,6 +4,8 @@ import com.apero.service.di.NetworkModule
 import com.apero.service.di.NetworkModule.timestampRepository
 import com.apero.service.domain.usecase.GetTimestampUseCase
 import com.apero.service.logger.Logger
+import com.apero.service.network.interceptor.SignatureInterceptor
+import com.apero.service.provider.SignatureProvider
 
 object AiChatSDK {
 
@@ -55,4 +57,15 @@ object AiChatSDK {
     val timestampUseCase: GetTimestampUseCase by lazy {
         return@lazy NetworkModule.timestampUseCase
     }
+
+    private val signatureProvider: SignatureProvider by lazy {
+        return@lazy SignatureProvider()
+    }
+
+    internal val signatureInterceptor = SignatureInterceptor(
+        apiKey = getApiKey(),
+        publicKey = getPublicKey(),
+        timestampUseCase = timestampUseCase,
+        signatureProvider = signatureProvider
+    )
 }
