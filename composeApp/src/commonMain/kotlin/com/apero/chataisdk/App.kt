@@ -20,6 +20,8 @@ import chataisdk.composeapp.generated.resources.compose_multiplatform
 import com.apero.service.AiChatSDK
 import com.apero.service.data.remote.model.ApiResult
 import com.apero.service.domain.usecase.GetTimestampUseCase
+import com.apero.service.domain.usecase.SignUpUseCase
+import com.apero.service.domain.model.AuthResult
 
 @Composable
 @Preview
@@ -57,7 +59,70 @@ fun App() {
                 }
             }
 
+            SignUpScreen(AiChatSDK.signupUseCase)
             TimestampScreen(AiChatSDK.timestampUseCase)
+        }
+    }
+}
+
+@Composable
+fun SignUpScreen(signUpUseCase: SignUpUseCase) {
+    var authResult by remember { mutableStateOf<AuthResult?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(
+            onClick = {
+                // Reset state
+                authResult = null
+                errorMessage = null
+                isLoading = true
+            },
+            enabled = !isLoading
+        ) {
+            Text(if (isLoading) "Signing Up..." else "Sign Up")
+        }
+
+        LaunchedEffect(isLoading) {
+            if (isLoading) {
+                try {
+                    when (val result = signUpUseCase()) {
+                        is ApiResult.Success -> {
+                            authResult = result.data
+                            errorMessage = null
+                        }
+
+                        is ApiResult.Error -> {
+                            errorMessage = result.message
+                            authResult = null
+                        }
+                    }
+                } catch (e: Exception) {
+                    errorMessage = e.message
+                    authResult = null
+                } finally {
+                    isLoading = false
+                }
+            }
+        }
+
+        when {
+            isLoading -> Text("Loading...")
+            errorMessage != null -> {
+                AiChatSDK.logger.e("SignUpScreen", "Error during sign up $errorMessage")
+                Text("Error: $errorMessage")
+            }
+            authResult != null -> {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("Sign Up Success!")
+                    Text("User ID: ${authResult!!.userId}")
+                    Text("Email: ${authResult!!.email ?: "N/A"}")
+                    Text("Username: ${authResult!!.userName ?: "N/A"}")
+                }
+            }
         }
     }
 }

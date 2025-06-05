@@ -32,6 +32,7 @@ internal fun <T : HttpClientEngineConfig> createBaseHttpClient(
                 ignoreUnknownKeys = true
                 prettyPrint = true
                 isLenient = true
+                encodeDefaults = true
             })
         }
         install(Logging) {
