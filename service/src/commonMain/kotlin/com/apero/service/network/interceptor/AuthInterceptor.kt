@@ -10,11 +10,14 @@ import com.apero.service.extension.handleErrorResponse
 import com.apero.service.provider.DeviceIdProvider
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpClientPlugin
+import io.ktor.client.plugins.HttpSend
+import io.ktor.client.plugins.plugin
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.HttpRequestPipeline
 import io.ktor.client.request.takeFrom
 import io.ktor.client.statement.HttpReceivePipeline
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.HttpResponsePipeline
 import io.ktor.util.AttributeKey
 
 class AuthInterceptor(
@@ -35,48 +38,52 @@ class AuthInterceptor(
             }
             proceed()
         }
-        scope.requestPipeline.intercept(HttpReceivePipeline.After) {
+        scope.plugin(HttpSend).intercept { request ->
+            var call = execute(request)
+
             kotlin.runCatching {
-                val response = subject as HttpResponse
+                val response = call.response
                 val apiResult = response.handleErrorResponse()
-                if (response.status.value == 401 || apiResult.errorCodeEnum == ErrorCode.TOKEN_EXPIRED || apiResult.errorCodeEnum == ErrorCode.INVALID_TOKEN) {
+                if (response.status.value == 401 || apiResult.errorCodeEnum == ErrorCode.TOKEN_EXPIRED ||
+                    apiResult.errorCodeEnum == ErrorCode.INVALID_TOKEN
+                ) {
                     val newToken = localStorage.refreshToken?.let {
-                        refreshTokenUseCase(it)
+                        val result = refreshTokenUseCase(it)
+                        if (result is ApiResult.Success) return@let result
+                        else return@let signUpUseCase(
+                            deviceIdProvider.getOrCreateUUID(),
+                            applicationCode
+                        )
                     } ?: signUpUseCase(deviceIdProvider.getOrCreateUUID(), applicationCode)
 
                     when (newToken) {
                         is ApiResult.Success -> {
                             val newRequest = HttpRequestBuilder().apply {
-                                takeFrom(response.call.request)
+                                takeFrom(request)
                                 headers.remove("Authorization")
                                 headers.append(
                                     "Authorization",
                                     "Bearer ${newToken.data.accessToken}"
                                 )
                             }
-
-
-                            val newResponse =
-                                scope.requestPipeline.execute(newRequest, newRequest.body)
-                            proceedWith(newResponse)
+                            call = execute(newRequest)
                         }
 
                         is ApiResult.Error -> {
-                            proceed()
+                            localStorage.clearTokens()
                         }
                     }
                 }
-                else{
-                    proceed()
-                }
-            }.getOrElse {
+
+            }.getOrElse { exception ->
                 AiChatSDK.logger.e(
                     AiChatSDK.TAG_FOR_DEBUG,
                     "AuthInterceptor: Error handling response",
-                    it
+                    exception
                 )
             }
-        }
 
+            call
+        }
     }
 }

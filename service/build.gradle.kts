@@ -1,7 +1,11 @@
+import groovy.namespace.QName
+import groovy.util.Node
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.kotlin.serialization)
+    id("maven-publish")
 }
 
 kotlin {
@@ -114,4 +118,38 @@ kotlin {
         }
     }
 
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "apero-inhouse"
+            artifactId = "chat-ai-"
+            version = "0.0.1-alpha01"
+            artifact("${project.buildDir}/outputs/aar/service.aar")
+            pom.withXml {
+                val dependenciesNode = asNode().getAt(QName.valueOf("dependencies")).firstOrNull() as? Node
+                    ?: asNode().appendNode("dependencies")
+                configurations.getByName("implementation").dependencies.forEach {
+                    if (it.name != "unspecified") {
+                        val dependencyNode = dependenciesNode.appendNode("dependency")
+                        dependencyNode.appendNode("groupId", it.group)
+                        dependencyNode.appendNode("artifactId", it.name)
+                        it.version?.let { version ->
+                            dependencyNode.appendNode("version", version)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url = uri("https://artifactory.apero.vn/artifactory/gradle-release/")
+            credentials {
+                username = "deployer"
+                password = "apero@123"
+            }
+        }
+    }
 }

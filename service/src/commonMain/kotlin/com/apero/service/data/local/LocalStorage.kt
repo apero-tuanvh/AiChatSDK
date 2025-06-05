@@ -35,6 +35,11 @@ class LocalStorage(private val settings: Settings) {
             }
         }
 
+    fun clearTokens() {
+        accessToken = null
+        refreshToken = null
+    }
+
     companion object {
         private const val KEY_ACCESS_TOKEN = "KEY_ACCESS_TOKEN"
         private const val KEY_REFRESH_TOKEN = "KEY_REFRESH_TOKEN"

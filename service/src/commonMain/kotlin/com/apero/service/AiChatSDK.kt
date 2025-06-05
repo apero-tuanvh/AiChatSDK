@@ -19,7 +19,7 @@ object AiChatSDK {
     private var apiKey: String? = null
     private var publicKey: String? = null
     internal var isDebug: Boolean = true
-    private var applicationCode: String = "ai-virtu"
+    private var applicationCode: String? = null
 
     internal val logger = Logger()
 
@@ -46,6 +46,7 @@ object AiChatSDK {
 
     internal fun getApplicationCode(): String {
         return applicationCode
+            ?: throw IllegalArgumentException("You need install ApplicationCode with AiChatSDK.install() in your application")
     }
 
     fun install(
