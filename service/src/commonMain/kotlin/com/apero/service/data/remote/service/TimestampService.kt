@@ -6,6 +6,7 @@ import com.apero.service.handleErrorResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.request.get
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +29,8 @@ class TimestampServiceImpl(
             } catch (e: ClientRequestException) {
                 e.response.handleErrorResponse()
             } catch (e: ServerResponseException) {
+                e.response.handleErrorResponse()
+            } catch (e: ResponseException) {
                 e.response.handleErrorResponse()
             } catch (e: Exception) {
                 ApiResult.Error(

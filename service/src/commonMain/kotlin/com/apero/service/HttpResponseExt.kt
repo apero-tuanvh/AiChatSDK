@@ -8,21 +8,21 @@ import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.json.Json
 
 
-suspend fun HttpResponse.handleErrorResponse(): com.apero.service.data.remote.model.ApiResult.Error {
+suspend fun HttpResponse.handleErrorResponse(): ApiResult.Error {
     val response = this
     val rawBody = response.bodyAsText()
     val errorResponse = try {
-        Json.decodeFromString<com.apero.service.data.remote.model.ErrorResponse>(rawBody)
+        Json.decodeFromString<ErrorResponse>(rawBody)
     } catch (_: Exception) {
         null
     }
 
-    val errorCodeEnum = com.apero.service.data.remote.model.ErrorCode.fromCode(errorResponse?.errorCode)
+    val errorCodeEnum = ErrorCode.fromCode(errorResponse?.errorCode)
 
     val message = errorResponse?.message
         ?: "Unknown error, HTTP code: ${response.status.value}"
 
-    return com.apero.service.data.remote.model.ApiResult.Error(
+    return ApiResult.Error(
         message = message,
         code = response.status.value,
         rawBody = rawBody,

@@ -114,9 +114,9 @@ fun SignUpScreen(signUpUseCase: SignUpUseCase) {
         when {
             isLoading -> Text("Loading...")
             errorMessage != null -> {
-                AiChatSDK.logger.e("SignUpScreen", "Error during sign up $errorMessage")
                 Text("Error: $errorMessage")
             }
+
             authResult != null -> {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("Sign Up Success!")
@@ -185,7 +185,7 @@ fun RefreshTokenScreen(refreshTokenUseCase: RefreshTokenUseCase) {
                         }
 
                         is ApiResult.Error -> {
-                            errorMessage = result.message
+                            errorMessage = result.errorCodeEnum?.code
                             authResult = null
                         }
                     }
@@ -201,10 +201,6 @@ fun RefreshTokenScreen(refreshTokenUseCase: RefreshTokenUseCase) {
         when {
             isLoading -> Text("Loading...")
             errorMessage != null -> {
-                AiChatSDK.logger.e(
-                    "RefreshTokenScreen",
-                    "Error during token refresh: $errorMessage"
-                )
                 Text("Error: $errorMessage")
             }
 

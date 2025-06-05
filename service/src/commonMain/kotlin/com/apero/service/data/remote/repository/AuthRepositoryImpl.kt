@@ -1,5 +1,6 @@
 package com.apero.service.data.remote.repository
 
+import com.apero.service.AiChatSDK
 import com.apero.service.data.local.LocalStorage
 import com.apero.service.data.remote.mapper.toAuthResult
 import com.apero.service.data.remote.model.ApiResult
@@ -26,6 +27,10 @@ class AuthRepositoryImpl(
             }
 
             is ApiResult.Error -> {
+                AiChatSDK.logger.e(
+                    AiChatSDK.TAG_FOR_DEBUG,
+                    "Error during signUp by ${response.message}",
+                )
                 response
             }
         }
@@ -41,7 +46,13 @@ class AuthRepositoryImpl(
                 ApiResult.Success(response.data.toAuthResult())
             }
 
-            is ApiResult.Error -> response
+            is ApiResult.Error -> {
+                AiChatSDK.logger.e(
+                    AiChatSDK.TAG_FOR_DEBUG,
+                    "Error during refreshToken by ${response.message}",
+                )
+                response
+            }
         }
     }
 

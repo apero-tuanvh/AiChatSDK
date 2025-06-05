@@ -23,7 +23,7 @@ object AiChatSDK {
     internal var isDebug: Boolean = true
     private var applicationCode: String = "ai-virtu"
 
-    val logger = Logger()
+    internal val logger = Logger()
 
     internal fun getBaseUrl(): String {
         return baseUrl
