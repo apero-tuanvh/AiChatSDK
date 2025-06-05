@@ -78,4 +78,8 @@ internal object NetworkModule {
         return@lazy RefreshTokenUseCase(authRepository)
     }
 
+    private val chatHttpClient by lazy {
+        httpClientProvider.createChatHttpClient()
+    }
+
 }
