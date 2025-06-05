@@ -21,6 +21,7 @@ import com.apero.service.AiChatSDK
 import com.apero.service.data.remote.model.ApiResult
 import com.apero.service.domain.usecase.GetTimestampUseCase
 import com.apero.service.domain.usecase.SignUpUseCase
+import com.apero.service.domain.usecase.RefreshTokenUseCase
 import com.apero.service.domain.model.AuthResult
 
 @Composable
@@ -61,6 +62,7 @@ fun App() {
 
             SignUpScreen(AiChatSDK.signupUseCase)
             TimestampScreen(AiChatSDK.timestampUseCase)
+            RefreshTokenScreen(AiChatSDK.refreshTokenUseCase)
         }
     }
 }
@@ -149,5 +151,71 @@ fun TimestampScreen(getTimestampUseCase: GetTimestampUseCase) {
         errorMessage != null -> Text("Error: $errorMessage")
         timestamp != null -> Text("Timestamp: $timestamp")
         else -> Text("No data")
+    }
+}
+
+@Composable
+fun RefreshTokenScreen(refreshTokenUseCase: RefreshTokenUseCase) {
+    var authResult by remember { mutableStateOf<AuthResult?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(
+            onClick = {
+                // Reset state
+                authResult = null
+                errorMessage = null
+                isLoading = true
+            },
+            enabled = !isLoading
+        ) {
+            Text(if (isLoading) "Refreshing Token..." else "Refresh Token")
+        }
+
+        LaunchedEffect(isLoading) {
+            if (isLoading) {
+                try {
+                    when (val result = refreshTokenUseCase()) {
+                        is ApiResult.Success -> {
+                            authResult = result.data
+                            errorMessage = null
+                        }
+
+                        is ApiResult.Error -> {
+                            errorMessage = result.message
+                            authResult = null
+                        }
+                    }
+                } catch (e: Exception) {
+                    errorMessage = e.message
+                    authResult = null
+                } finally {
+                    isLoading = false
+                }
+            }
+        }
+
+        when {
+            isLoading -> Text("Loading...")
+            errorMessage != null -> {
+                AiChatSDK.logger.e(
+                    "RefreshTokenScreen",
+                    "Error during token refresh: $errorMessage"
+                )
+                Text("Error: $errorMessage")
+            }
+
+            authResult != null -> {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("Token Refresh Success!")
+                    Text("User ID: ${authResult!!.userId}")
+                    Text("Email: ${authResult!!.email ?: "N/A"}")
+                    Text("Username: ${authResult!!.userName ?: "N/A"}")
+                }
+            }
+        }
     }
 }
