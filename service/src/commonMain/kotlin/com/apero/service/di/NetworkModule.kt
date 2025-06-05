@@ -6,7 +6,6 @@ import com.apero.service.data.remote.service.TimestampServiceImpl
 import com.apero.service.domain.repository.TimestampRepository
 import com.apero.service.domain.usecase.GetTimestampUseCase
 import com.apero.service.network.HttpClientFactory
-import io.ktor.client.HttpClient
 
 internal object NetworkModule {
     private val httpClientProvider by lazy {

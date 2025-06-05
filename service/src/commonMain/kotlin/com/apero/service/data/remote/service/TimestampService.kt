@@ -11,6 +11,9 @@ import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
 
@@ -18,24 +21,25 @@ interface TimestampService {
     suspend fun getTimestamp(): ApiResult<TimestampResponseWrapper>
 }
 
-class TimestampServiceImpl(
+internal class TimestampServiceImpl(
     private val client: HttpClient
 ) : TimestampService {
-    override suspend fun getTimestamp(): ApiResult<TimestampResponseWrapper> {
-        return try {
-            val response = client.get("api/timestamp")
-            ApiResult.Success(response.body())
-        } catch (e: ClientRequestException) {
-            handleErrorResponse(e.response)
-        } catch (e: ServerResponseException) {
-            handleErrorResponse(e.response)
-        } catch (e: Exception) {
-            ApiResult.Error(
-                message = "Network or unknown error: ${e.message}",
-                rawBody = null
-            )
+    override suspend fun getTimestamp(): ApiResult<TimestampResponseWrapper> =
+        withContext(Dispatchers.IO) {
+            return@withContext try {
+                val response = client.get("api/timestamp")
+                ApiResult.Success(response.body())
+            } catch (e: ClientRequestException) {
+                handleErrorResponse(e.response)
+            } catch (e: ServerResponseException) {
+                handleErrorResponse(e.response)
+            } catch (e: Exception) {
+                ApiResult.Error(
+                    message = "Network or unknown error: ${e.message}",
+                    rawBody = null
+                )
+            }
         }
-    }
 
     private suspend fun handleErrorResponse(response: HttpResponse): ApiResult.Error {
         val rawBody = response.bodyAsText()

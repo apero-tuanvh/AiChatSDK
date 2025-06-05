@@ -13,11 +13,11 @@ import io.ktor.client.request.header
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-expect class HttpClientFactory() {
+internal expect class HttpClientFactory() {
     fun createTimeStampHttpClient(): HttpClient
 }
 
-fun <T : HttpClientEngineConfig> createBaseHttpClient(
+internal fun <T : HttpClientEngineConfig> createBaseHttpClient(
     engineFactory: HttpClientEngineFactory<T>,
     block: HttpClientConfig<T>.() -> Unit = {}
 ): HttpClient {
