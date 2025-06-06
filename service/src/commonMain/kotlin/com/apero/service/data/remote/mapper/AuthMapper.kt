@@ -4,7 +4,7 @@ import com.apero.service.data.remote.model.response.RefreshTokenResponse
 import com.apero.service.data.remote.model.response.SignUpResponse
 import com.apero.service.domain.model.AuthResult
 
-fun SignUpResponse.toAuthResult(): AuthResult {
+internal fun SignUpResponse.toAuthResult(): AuthResult {
     return AuthResult(
         accessToken = this.data.token.accessToken,
         refreshToken = this.data.token.refreshToken,
@@ -15,7 +15,7 @@ fun SignUpResponse.toAuthResult(): AuthResult {
     )
 }
 
-fun RefreshTokenResponse.toAuthResult(): AuthResult {
+internal fun RefreshTokenResponse.toAuthResult(): AuthResult {
     return AuthResult(
         accessToken = this.data.accessToken,
         refreshToken = this.data.refreshToken,

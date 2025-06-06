@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ConversationHistoryResponse(
+internal data class ConversationHistoryResponse(
     @SerialName("data")
     val data: ConversationHistoryData,
 
@@ -18,7 +18,7 @@ data class ConversationHistoryResponse(
     val traceId: String
 ) {
     @Serializable
-    data class ConversationHistoryData(
+    internal data class ConversationHistoryData(
         @SerialName("items")
         val items: List<ConversationItem>,
 
@@ -34,24 +34,24 @@ data class ConversationHistoryResponse(
         @SerialName("hasPreviousPage")
         val hasPreviousPage: Boolean
     )
-    
+
     @Serializable
-    data class ConversationItem(
+    internal data class ConversationItem(
         @SerialName("id")
         val id: String,
-        
+
         @SerialName("userId")
         val userId: String,
-        
+
         @SerialName("botId")
         val botId: String,
-        
+
         @SerialName("createdAt")
         val createdAt: String,
-        
+
         @SerialName("updatedAt")
         val updatedAt: String,
-        
+
         @SerialName("BotMessages")
         val botMessages: List<BotMessageResponse>
     )

@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class StyleListResponse(
+internal data class StyleListResponse(
     @SerialName("data")
     val data: StyleDataResponse?,
 
@@ -19,7 +19,7 @@ data class StyleListResponse(
 )
 
 @Serializable
-data class StyleDataResponse(
+internal data class StyleDataResponse(
     @SerialName("items")
     val items: List<StyleEntity>?,
 
@@ -28,13 +28,13 @@ data class StyleDataResponse(
 )
 
 @Serializable
-data class MetaDataResponse(
+internal data class MetaDataResponse(
     @SerialName("pagination")
     val pagination: PaginationData?,
 )
 
 @Serializable
-data class PaginationData(
+internal data class PaginationData(
     @SerialName("page")
     val page: Int?,
 
@@ -49,7 +49,7 @@ data class PaginationData(
 )
 
 @Serializable
-data class StyleEntity(
+internal data class StyleEntity(
     @SerialName("id")
     val id: Int?,
 
@@ -79,7 +79,7 @@ data class StyleEntity(
 )
 
 @Serializable
-data class ImageEntity(
+internal data class ImageEntity(
     @SerialName("id")
     val id: Int?,
 

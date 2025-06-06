@@ -3,12 +3,12 @@ package com.apero.service.data.remote.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TimestampData(
+internal data class TimestampData(
     val timestamp: Long
 )
 
 @Serializable
-data class TimestampResponseWrapper(
+internal data class TimestampResponseWrapper(
     val data: TimestampData,
     val timestamp: String,
     val path: String,

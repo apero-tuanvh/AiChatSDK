@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class GenImageRequest(
+internal data class GenImageRequest(
     @SerialName("question") val question: String,
     @SerialName("persist") val persist: Boolean,
     @SerialName("conversationId") val conversationId: String,

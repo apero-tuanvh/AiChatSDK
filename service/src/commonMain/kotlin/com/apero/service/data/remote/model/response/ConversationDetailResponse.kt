@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ConversationDetailResponse(
+internal data class ConversationDetailResponse(
     @SerialName("data")
     val data: ConversationData,
 
@@ -19,7 +19,7 @@ data class ConversationDetailResponse(
 )
 
 @Serializable
-data class ConversationData(
+internal data class ConversationData(
     @SerialName("items")
     val items: List<MessageItem>,
 
@@ -31,7 +31,7 @@ data class ConversationData(
 )
 
 @Serializable
-data class MessageItem(
+internal data class MessageItem(
     @SerialName("id")
     val id: String,
 
@@ -64,7 +64,7 @@ data class MessageItem(
 )
 
 @Serializable
-enum class SendFrom {
+internal enum class SendFrom {
     @SerialName("USER")
     USER,
 

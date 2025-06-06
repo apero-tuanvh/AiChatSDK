@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import okio.FileSystem
 import okio.Path
 
-class AiChatRepositoryImpl(
+internal class AiChatRepositoryImpl(
     private val aiChatService: AiChatService,
     private val fileSystem: FileSystem
 ) : AiChatRepository {

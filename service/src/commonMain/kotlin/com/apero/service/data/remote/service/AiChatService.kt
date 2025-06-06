@@ -16,7 +16,7 @@ import com.apero.service.extension.safePost
 import com.apero.service.extension.safePostFile
 import io.ktor.client.HttpClient
 
-interface AiChatService {
+internal interface AiChatService {
 
     suspend fun getConversationHistory(
         botCode: String,
@@ -57,7 +57,7 @@ interface AiChatService {
     ): ApiResult<GenImageResponse>
 }
 
-class AiChatServiceImpl(
+internal class AiChatServiceImpl(
     private val client: HttpClient
 ) : AiChatService {
     override suspend fun getConversationHistory(

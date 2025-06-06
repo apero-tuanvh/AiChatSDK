@@ -8,12 +8,12 @@ import com.apero.service.data.remote.model.response.SignUpResponse
 import com.apero.service.extension.safePost
 import io.ktor.client.HttpClient
 
-interface AuthApiService {
+internal interface AuthApiService {
     suspend fun signUp(request: SignUpRequest): ApiResult<SignUpResponse>
     suspend fun refreshToken(request: RefreshTokenRequest): ApiResult<RefreshTokenResponse>
 }
 
-class AuthApiServiceImpl(
+internal class AuthApiServiceImpl(
     private val client: HttpClient
 ) : AuthApiService {
 

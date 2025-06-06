@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SignUpRequest(
+internal data class SignUpRequest(
     @SerialName("referId") val referId: String,  // deviceId or user identifier
     @SerialName("applicationCode") val applicationCode: String = "ai-virtu"
 )

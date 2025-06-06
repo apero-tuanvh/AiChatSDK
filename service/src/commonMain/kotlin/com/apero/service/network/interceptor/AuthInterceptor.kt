@@ -20,7 +20,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.HttpResponsePipeline
 import io.ktor.util.AttributeKey
 
-class AuthInterceptor(
+internal class AuthInterceptor(
     private val localStorage: LocalStorage,
     private val signUpUseCase: SignUpUseCase,
     private val refreshTokenUseCase: RefreshTokenUseCase,

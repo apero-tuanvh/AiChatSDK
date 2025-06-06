@@ -3,7 +3,7 @@ package com.apero.service.data.remote.mapper
 import com.apero.service.data.remote.model.response.GenImageResponse
 import com.apero.service.domain.model.GenImageResult
 
-fun GenImageResponse.toModel(): GenImageResult {
+internal fun GenImageResponse.toModel(): GenImageResult {
     return GenImageResult(
         id = this.data?.id ?: "",
         content = this.data?.content,

@@ -10,7 +10,7 @@ import com.apero.service.domain.model.ConversationDetail
 import com.apero.service.domain.model.ConversationHistory
 import com.apero.service.domain.model.ConversationModel
 
-fun ConversationResponse.toModel(): ConversationModel {
+internal fun ConversationResponse.toModel(): ConversationModel {
     return ConversationModel(
         data = this.data.toModel(),
         timestamp = this.timestamp,
@@ -19,7 +19,7 @@ fun ConversationResponse.toModel(): ConversationModel {
     )
 }
 
-fun ConversationResponse.ConversationData.toModel(): ConversationModel.ConversationData {
+internal fun ConversationResponse.ConversationData.toModel(): ConversationModel.ConversationData {
     return ConversationModel.ConversationData(
         id = this.id,
         userId = this.userId,
@@ -29,7 +29,7 @@ fun ConversationResponse.ConversationData.toModel(): ConversationModel.Conversat
     )
 }
 
-fun ConversationHistoryResponse.toConversationHistory(): ConversationHistory {
+internal fun ConversationHistoryResponse.toConversationHistory(): ConversationHistory {
     return ConversationHistory(
         data = ConversationHistory.ConversationHistoryData(
             items = this.data.items.map { item ->
@@ -53,7 +53,7 @@ fun ConversationHistoryResponse.toConversationHistory(): ConversationHistory {
     )
 }
 
-fun ConversationDetailResponse.toConversationDetail(): ConversationDetail {
+internal fun ConversationDetailResponse.toConversationDetail(): ConversationDetail {
     return ConversationDetail(
         id = this.traceId,
         messages = this.data.items.map { item ->
@@ -74,7 +74,7 @@ fun ConversationDetailResponse.toConversationDetail(): ConversationDetail {
     )
 }
 
-fun BotMessageResponse.toModel(): BotMessageModel {
+internal fun BotMessageResponse.toModel(): BotMessageModel {
     return BotMessageModel(
         id = this.id,
         content = this.content,

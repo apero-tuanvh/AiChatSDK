@@ -4,14 +4,14 @@ import com.apero.service.data.remote.model.response.StyleEntity
 import com.apero.service.data.remote.model.response.StyleListResponse
 import com.apero.service.domain.model.GenImageStyleModel
 
-fun StyleListResponse.toListStyleGenImage(): List<GenImageStyleModel> {
+internal fun StyleListResponse.toListStyleGenImage(): List<GenImageStyleModel> {
     val data = data?.items
     return data?.mapNotNull {
         it.toStyleGenImage()
     } ?: emptyList()
 }
 
-fun StyleEntity.toStyleGenImage(): GenImageStyleModel? {
+internal fun StyleEntity.toStyleGenImage(): GenImageStyleModel? {
     val url = images?.firstOrNull()?.url
     return if (id != null && name != null && url != null && positivePrompt != null) {
         GenImageStyleModel(

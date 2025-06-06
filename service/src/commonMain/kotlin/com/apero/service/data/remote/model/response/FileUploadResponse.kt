@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FileUploadResponse(
+internal data class FileUploadResponse(
     @SerialName("data")
     val data: UploadData,
 
@@ -19,7 +19,7 @@ data class FileUploadResponse(
 )
 
 @Serializable
-data class UploadData(
+internal data class UploadData(
     @SerialName("filePath")
     val filePath: String
 )

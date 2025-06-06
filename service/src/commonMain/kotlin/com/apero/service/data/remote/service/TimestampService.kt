@@ -14,11 +14,11 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
 
-interface TimestampService {
+internal interface TimestampService {
     suspend fun getTimestamp(): ApiResult<TimestampResponseWrapper>
 }
 
-class TimestampServiceImpl(
+internal class TimestampServiceImpl(
     private val client: HttpClient
 ) : TimestampService {
     override suspend fun getTimestamp(): ApiResult<TimestampResponseWrapper> =

@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class GenImageResponse(
+internal data class GenImageResponse(
     @SerialName("success") val success: Boolean?,
     @SerialName("message") val message: String?,
     @SerialName("data") val data: GenImageData?,
@@ -14,7 +14,7 @@ data class GenImageResponse(
 )
 
 @Serializable
-data class GenImageData(
+internal data class GenImageData(
     @SerialName("id") val id: String,
     @SerialName("content") val content: String?,
     @SerialName("attachment") val attachment: String?,

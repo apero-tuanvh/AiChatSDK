@@ -12,7 +12,7 @@ import com.apero.service.data.remote.service.AuthApiService
 import com.apero.service.domain.model.AuthResult
 import com.apero.service.domain.repository.AuthRepository
 
-class AuthRepositoryImpl(
+internal class AuthRepositoryImpl(
     private val apiService: AuthApiService,
     private val localStorage: LocalStorage,
 ) : AuthRepository {

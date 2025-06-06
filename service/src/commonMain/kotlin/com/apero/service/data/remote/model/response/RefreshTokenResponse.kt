@@ -4,14 +4,14 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RefreshTokenResponse(
+internal data class RefreshTokenResponse(
     @SerialName("data") val data: TokenData,
     @SerialName("timestamp") val timestamp: String,
     @SerialName("path") val path: String,
     @SerialName("traceId") val traceId: String
 ) {
     @Serializable
-    data class TokenData(
+    internal data class TokenData(
         @SerialName("accessToken") val accessToken: String,
         @SerialName("refreshToken") val refreshToken: String
     )

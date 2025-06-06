@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ConversationResponse(
+internal data class ConversationResponse(
     @SerialName("data")
     val data: ConversationData,
 
@@ -18,19 +18,19 @@ data class ConversationResponse(
     val traceId: String
 ) {
     @Serializable
-    data class ConversationData(
+    internal data class ConversationData(
         @SerialName("id")
         val id: String,
-        
+
         @SerialName("userId")
         val userId: String,
-        
+
         @SerialName("botId")
         val botId: String,
-        
+
         @SerialName("createdAt")
         val createdAt: String,
-        
+
         @SerialName("updatedAt")
         val updatedAt: String
     )

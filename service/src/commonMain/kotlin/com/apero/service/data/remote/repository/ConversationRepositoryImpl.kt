@@ -10,7 +10,7 @@ import com.apero.service.domain.model.ConversationHistory
 import com.apero.service.domain.model.ConversationModel
 import com.apero.service.domain.repository.ConversationRepository
 
-class ConversationRepositoryImpl(
+internal class ConversationRepositoryImpl(
     private val aiChatService: AiChatService
 ) : ConversationRepository {
     override suspend fun getConversationList(
