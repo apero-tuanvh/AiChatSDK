@@ -1,6 +1,7 @@
 package com.apero.service.domain.repository
 
 import com.apero.service.data.remote.model.ApiResult
+import com.apero.service.domain.model.ChatAnswerData
 import com.apero.service.domain.model.GenImageResult
 import com.apero.service.domain.model.GenImageStyleModel
 import kotlinx.coroutines.flow.Flow
@@ -30,4 +31,12 @@ interface AiChatRepository {
 
     suspend fun fetchGenImageStyleModels(botCode: String): ApiResult<List<GenImageStyleModel>>
     fun getFlowGenImageStyleModel(): Flow<List<GenImageStyleModel>>
+
+    fun chatSeeAsFlow(
+        botCode: String,
+        question: String,
+        fileUrls: List<String>,
+        persist: Boolean,
+        conversationId: String
+    ): Flow<ChatAnswerData>
 }

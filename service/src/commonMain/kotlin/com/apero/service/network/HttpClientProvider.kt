@@ -17,6 +17,7 @@ internal expect class HttpClientFactory() {
     fun createTimeStampHttpClient(): HttpClient
     fun createAuthHttpClient(): HttpClient
     fun createChatHttpClient(): HttpClient
+    fun createChatSSEHttpClient(): HttpClient
 }
 
 internal fun <T : HttpClientEngineConfig> createBaseHttpClient(

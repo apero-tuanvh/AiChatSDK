@@ -125,7 +125,7 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "apero-inhouse"
             artifactId = "chat-ai-sdk"
-            version = "0.0.1-alpha01"
+            version = "0.0.1-alpha02"
             from(components["kotlin"])
         }
     }

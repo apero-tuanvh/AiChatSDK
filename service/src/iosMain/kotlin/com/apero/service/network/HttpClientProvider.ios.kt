@@ -3,6 +3,7 @@ package com.apero.service.network
 import com.apero.service.di.NetworkModule
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.darwin.Darwin
+import io.ktor.client.plugins.sse.SSE
 
 internal actual class HttpClientFactory {
     actual fun createTimeStampHttpClient(): HttpClient {
@@ -19,6 +20,14 @@ internal actual class HttpClientFactory {
         return createBaseHttpClient(Darwin) {
             install(NetworkModule.signatureInterceptor)
             install(NetworkModule.authInterceptor)
+        }
+    }
+
+    actual fun createChatSSEHttpClient(): HttpClient {
+        return createBaseHttpClient(Darwin) {
+            install(NetworkModule.signatureInterceptor)
+            install(NetworkModule.authInterceptor)
+            install(SSE)
         }
     }
 }

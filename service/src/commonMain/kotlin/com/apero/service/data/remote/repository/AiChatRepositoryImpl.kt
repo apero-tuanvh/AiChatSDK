@@ -3,8 +3,11 @@ package com.apero.service.data.remote.repository
 import com.apero.service.data.remote.mapper.toListStyleGenImage
 import com.apero.service.data.remote.mapper.toModel
 import com.apero.service.data.remote.model.ApiResult
+import com.apero.service.data.remote.model.request.ChatSseRequest
 import com.apero.service.data.remote.model.request.GenImageRequest
 import com.apero.service.data.remote.service.AiChatService
+import com.apero.service.data.remote.service.ChatSSEService
+import com.apero.service.domain.model.ChatAnswerData
 import com.apero.service.domain.model.ConversationModel
 import com.apero.service.domain.model.GenImageResult
 import com.apero.service.domain.model.GenImageStyleModel
@@ -12,12 +15,15 @@ import com.apero.service.domain.repository.AiChatRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import okio.FileSystem
 import okio.Path
 
 internal class AiChatRepositoryImpl(
     private val aiChatService: AiChatService,
+    private val chatSSEService: ChatSSEService,
     private val fileSystem: FileSystem
 ) : AiChatRepository {
 
@@ -100,5 +106,29 @@ internal class AiChatRepositoryImpl(
 
     override fun getFlowGenImageStyleModel(): Flow<List<GenImageStyleModel>> {
         return _genImageStyleModelFlow.asStateFlow()
+    }
+
+    override fun chatSeeAsFlow(
+        botCode: String,
+        question: String,
+        fileUrls: List<String>,
+        persist: Boolean,
+        conversationId: String
+    ): Flow<ChatAnswerData> = channelFlow {
+        trySend(ChatAnswerData.Init(conversationId))
+        val chatSeeRequest = ChatSseRequest(
+            question = question,
+            fileUrls = fileUrls,
+            persist = persist,
+            conversationId = conversationId
+        )
+        var message = ""
+        val chatSseResponse = chatSSEService.sendMessage(botCode, chatSeeRequest)
+        chatSseResponse.distinctUntilChanged().collect { response ->
+            message += response.message
+            trySend(ChatAnswerData.Answering(conversationId, message))
+        }
+
+        trySend(ChatAnswerData.Completed(conversationId, null))
     }
 }

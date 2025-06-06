@@ -18,6 +18,8 @@ import io.ktor.client.request.takeFrom
 import io.ktor.client.statement.HttpReceivePipeline
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.HttpResponsePipeline
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.util.AttributeKey
 
 internal class AuthInterceptor(
@@ -27,6 +29,7 @@ internal class AuthInterceptor(
     private val applicationCode: String,
     private val deviceIdProvider: DeviceIdProvider
 ) : HttpClientPlugin<Unit, AuthInterceptor> {
+
     override val key: AttributeKey<AuthInterceptor> = AttributeKey("AuthInterceptor")
 
     override fun prepare(block: Unit.() -> Unit) = this
@@ -40,41 +43,41 @@ internal class AuthInterceptor(
         }
         scope.plugin(HttpSend).intercept { request ->
             var call = execute(request)
-
-            kotlin.runCatching {
+            runCatching {
                 val response = call.response
-                val apiResult = response.handleErrorResponse()
-                if (response.status.value == 401 || apiResult.errorCodeEnum == ErrorCode.TOKEN_EXPIRED ||
-                    apiResult.errorCodeEnum == ErrorCode.INVALID_TOKEN
-                ) {
-                    val newToken = localStorage.refreshToken?.let {
-                        val result = refreshTokenUseCase(it)
-                        if (result is ApiResult.Success) return@let result
-                        else return@let signUpUseCase(
-                            deviceIdProvider.getOrCreateUUID(),
-                            applicationCode
-                        )
-                    } ?: signUpUseCase(deviceIdProvider.getOrCreateUUID(), applicationCode)
+                val contentType = response.contentType()
+                if (contentType?.contentType == ContentType.Application.Json.contentType) {
+                    val apiResult = response.handleErrorResponse()
+                    if (response.status.value == 401 ||
+                        apiResult.errorCodeEnum == ErrorCode.TOKEN_EXPIRED ||
+                        apiResult.errorCodeEnum == ErrorCode.INVALID_TOKEN
+                    ) {
+                        val newToken = localStorage.refreshToken?.let {
+                            val result = refreshTokenUseCase(it)
+                            if (result is ApiResult.Success) return@let result
+                            else signUpUseCase(deviceIdProvider.getOrCreateUUID(), applicationCode)
+                        } ?: signUpUseCase(deviceIdProvider.getOrCreateUUID(), applicationCode)
 
-                    when (newToken) {
-                        is ApiResult.Success -> {
-                            val newRequest = HttpRequestBuilder().apply {
-                                takeFrom(request)
-                                headers.remove("Authorization")
-                                headers.append(
-                                    "Authorization",
-                                    "Bearer ${newToken.data.accessToken}"
-                                )
+                        when (newToken) {
+                            is ApiResult.Success -> {
+                                // Gửi lại request với token mới
+                                val newRequest = HttpRequestBuilder().apply {
+                                    takeFrom(request)
+                                    headers.remove("Authorization")
+                                    headers.append(
+                                        "Authorization",
+                                        "Bearer ${newToken.data.accessToken}"
+                                    )
+                                }
+                                call = execute(newRequest)
                             }
-                            call = execute(newRequest)
-                        }
 
-                        is ApiResult.Error -> {
-                            localStorage.clearTokens()
+                            is ApiResult.Error -> {
+                                localStorage.clearTokens()
+                            }
                         }
                     }
                 }
-
             }.getOrElse { exception ->
                 AiChatSDK.logger.e(
                     AiChatSDK.TAG_FOR_DEBUG,

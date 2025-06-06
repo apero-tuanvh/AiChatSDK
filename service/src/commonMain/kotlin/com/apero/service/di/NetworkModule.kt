@@ -11,6 +11,8 @@ import com.apero.service.data.remote.service.AiChatService
 import com.apero.service.data.remote.service.AiChatServiceImpl
 import com.apero.service.data.remote.service.AuthApiService
 import com.apero.service.data.remote.service.AuthApiServiceImpl
+import com.apero.service.data.remote.service.ChatSSEService
+import com.apero.service.data.remote.service.ChatSSEServiceImpl
 import com.apero.service.data.remote.service.TimestampService
 import com.apero.service.data.remote.service.TimestampServiceImpl
 import com.apero.service.domain.repository.AiChatRepository
@@ -23,6 +25,7 @@ import com.apero.service.domain.usecase.SignUpUseCase
 import com.apero.service.network.HttpClientFactory
 import com.apero.service.network.interceptor.AuthInterceptor
 import com.apero.service.network.interceptor.SignatureInterceptor
+import io.ktor.client.HttpClient
 
 internal object NetworkModule {
     private val httpClientProvider by lazy {
@@ -93,11 +96,19 @@ internal object NetworkModule {
     }
 
     internal val aiChatRepository: AiChatRepository by lazy {
-        return@lazy AiChatRepositoryImpl(aiChatService, LocalModule.fileSystem)
+        return@lazy AiChatRepositoryImpl(aiChatService, chatSSEService, LocalModule.fileSystem)
     }
 
     internal val conversationRepository: ConversationRepository by lazy {
         return@lazy ConversationRepositoryImpl(aiChatService)
+    }
+
+    internal val chatSSEClient: HttpClient by lazy {
+        httpClientProvider.createChatSSEHttpClient()
+    }
+
+    internal val chatSSEService: ChatSSEService by lazy {
+        return@lazy ChatSSEServiceImpl(chatSSEClient)
     }
 
 }
