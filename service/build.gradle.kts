@@ -124,23 +124,9 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = "apero-inhouse"
-            artifactId = "chat-ai-"
+            artifactId = "chat-ai-sdk"
             version = "0.0.1-alpha01"
-            artifact("${project.buildDir}/outputs/aar/service.aar")
-            pom.withXml {
-                val dependenciesNode = asNode().getAt(QName.valueOf("dependencies")).firstOrNull() as? Node
-                    ?: asNode().appendNode("dependencies")
-                configurations.getByName("implementation").dependencies.forEach {
-                    if (it.name != "unspecified") {
-                        val dependencyNode = dependenciesNode.appendNode("dependency")
-                        dependencyNode.appendNode("groupId", it.group)
-                        dependencyNode.appendNode("artifactId", it.name)
-                        it.version?.let { version ->
-                            dependencyNode.appendNode("version", version)
-                        }
-                    }
-                }
-            }
+            from(components["kotlin"])
         }
     }
     repositories {
