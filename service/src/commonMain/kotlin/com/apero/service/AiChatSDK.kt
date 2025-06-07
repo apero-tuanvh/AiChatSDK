@@ -12,7 +12,7 @@ import com.apero.service.logger.Logger
 
 object AiChatSDK {
 
-    const val TAG_FOR_DEBUG = "FOR_TESTER_IN_AiChatSDK"
+    const val TAG_FOR_DEBUG = "FOR_TESTER_IN_AiChatSDK: "
 
     private var baseUrl: String? = null
     private var bundleId: String? = null
@@ -21,7 +21,7 @@ object AiChatSDK {
     internal var isDebug: Boolean = true
     private var applicationCode: String? = null
 
-    internal val logger = Logger()
+    val logger = Logger()
 
 
     internal fun getBaseUrl(): String {

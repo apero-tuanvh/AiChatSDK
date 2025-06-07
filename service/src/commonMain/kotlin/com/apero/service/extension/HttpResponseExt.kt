@@ -1,5 +1,6 @@
 package com.apero.service.extension
 
+import com.apero.service.AiChatSDK
 import com.apero.service.data.remote.model.ApiResult
 import com.apero.service.data.remote.model.ErrorCode
 import com.apero.service.data.remote.model.ErrorResponse
@@ -61,6 +62,7 @@ suspend inline fun <reified T, reified R> HttpClient.safePost(
             contentType(ContentType.Application.Json)
             setBody(requestBody)
         }
+        AiChatSDK.logger.d(AiChatSDK.TAG_FOR_DEBUG + "POST", "data: ${response.bodyAsText()}")
         if (response.status.isSuccess()) {
             ApiResult.Success(response.body())
         } else {
@@ -87,6 +89,7 @@ suspend inline fun <reified R> HttpClient.safeGet(
                 }
             }
         }
+        AiChatSDK.logger.d(AiChatSDK.TAG_FOR_DEBUG + "GET", "data: ${response.bodyAsText()}")
         if (response.status.isSuccess()) {
             ApiResult.Success(response.body())
         } else {

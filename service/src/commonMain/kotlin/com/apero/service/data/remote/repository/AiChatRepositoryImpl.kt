@@ -1,5 +1,6 @@
 package com.apero.service.data.remote.repository
 
+import com.apero.service.AiChatSDK
 import com.apero.service.data.remote.mapper.toListStyleGenImage
 import com.apero.service.data.remote.mapper.toModel
 import com.apero.service.data.remote.model.ApiResult
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.update
 import okio.FileSystem
 import okio.Path
@@ -124,11 +126,23 @@ internal class AiChatRepositoryImpl(
         )
         var message = ""
         val chatSseResponse = chatSSEService.sendMessage(botCode, chatSeeRequest)
-        chatSseResponse.distinctUntilChanged().collect { response ->
-            message += response.message
-            trySend(ChatAnswerData.Answering(conversationId, message))
-        }
+        chatSseResponse.distinctUntilChanged()
+            .onCompletion {
+                trySend(ChatAnswerData.Completed(conversationId, it))
+                AiChatSDK.logger.d(
+                    AiChatSDK.TAG_FOR_DEBUG + "ChatSSE",
+                    "onCompletion $conversationId $it"
+                )
+            }
+            .collect { response ->
+                message += response.message
+                trySend(ChatAnswerData.Answering(conversationId, message))
+            }
 
-        trySend(ChatAnswerData.Completed(conversationId, null))
+
+    }
+
+    override fun cancelSendSseMessage() {
+        chatSSEService.cancelSendSseMessage()
     }
 }

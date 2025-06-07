@@ -140,6 +140,7 @@ fun ChatSSEScreen(
         }
 
         errorMessage?.let {
+            println(it)
             Text("Error: $it", color = MaterialTheme.colorScheme.error)
         }
 
@@ -164,6 +165,20 @@ fun ChatSSEScreen(
                 enabled = !isChatting && questionText.isNotBlank()
             ) {
                 Text(if (isChatting) "Chatting..." else "Send Message")
+            }
+
+            // Cancel Button
+            if (isChatting) {
+                Button(
+                    onClick = {
+                        aiChatRepository.cancelSendSseMessage()
+                        isChatting = false
+                        chatText += "\n\n[Message cancelled by user]"
+                    },
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    Text("Cancel Message")
+                }
             }
 
             // Chat Flow Effect

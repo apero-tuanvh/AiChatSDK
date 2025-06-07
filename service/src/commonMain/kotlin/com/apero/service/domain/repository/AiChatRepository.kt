@@ -39,4 +39,6 @@ interface AiChatRepository {
         persist: Boolean,
         conversationId: String
     ): Flow<ChatAnswerData>
+
+    fun cancelSendSseMessage()
 }

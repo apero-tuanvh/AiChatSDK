@@ -45,36 +45,44 @@ internal class AuthInterceptor(
             var call = execute(request)
             runCatching {
                 val response = call.response
+                val refreshTokenBlock = suspend {
+                    val newToken = localStorage.refreshToken?.let {
+                        val result = refreshTokenUseCase(it)
+                        if (result is ApiResult.Success) return@let result
+                        else signUpUseCase(deviceIdProvider.getOrCreateUUID(), applicationCode)
+                    } ?: signUpUseCase(deviceIdProvider.getOrCreateUUID(), applicationCode)
+
+                    when (newToken) {
+                        is ApiResult.Success -> {
+                            // Gửi lại request với token mới
+                            val newRequest = HttpRequestBuilder().apply {
+                                takeFrom(request)
+                                headers.remove("Authorization")
+                                headers.append(
+                                    "Authorization",
+                                    "Bearer ${newToken.data.accessToken}"
+                                )
+                            }
+                            call = execute(newRequest)
+                        }
+
+                        is ApiResult.Error -> {
+                            localStorage.clearTokens()
+                        }
+                    }
+                }
+
                 val contentType = response.contentType()
-                if (contentType?.contentType == ContentType.Application.Json.contentType) {
-                    val apiResult = response.handleErrorResponse()
-                    if (response.status.value == 401 ||
-                        apiResult.errorCodeEnum == ErrorCode.TOKEN_EXPIRED ||
-                        apiResult.errorCodeEnum == ErrorCode.INVALID_TOKEN
-                    ) {
-                        val newToken = localStorage.refreshToken?.let {
-                            val result = refreshTokenUseCase(it)
-                            if (result is ApiResult.Success) return@let result
-                            else signUpUseCase(deviceIdProvider.getOrCreateUUID(), applicationCode)
-                        } ?: signUpUseCase(deviceIdProvider.getOrCreateUUID(), applicationCode)
 
-                        when (newToken) {
-                            is ApiResult.Success -> {
-                                // Gửi lại request với token mới
-                                val newRequest = HttpRequestBuilder().apply {
-                                    takeFrom(request)
-                                    headers.remove("Authorization")
-                                    headers.append(
-                                        "Authorization",
-                                        "Bearer ${newToken.data.accessToken}"
-                                    )
-                                }
-                                call = execute(newRequest)
-                            }
-
-                            is ApiResult.Error -> {
-                                localStorage.clearTokens()
-                            }
+                when {
+                    response.status.value == 401 -> refreshTokenBlock()
+                    response.contentType()?.match(ContentType.Application.Json) == true -> {
+                        val apiResult = response.handleErrorResponse()
+                        if (
+                            apiResult.errorCodeEnum == ErrorCode.TOKEN_EXPIRED ||
+                            apiResult.errorCodeEnum == ErrorCode.INVALID_TOKEN
+                        ) {
+                            refreshTokenBlock()
                         }
                     }
                 }
