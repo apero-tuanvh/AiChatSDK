@@ -5,7 +5,7 @@ import com.russhwolf.settings.Settings
 
 class LocalStorage(private val settings: Settings) {
 
-    var accessToken: String?
+    internal var accessToken: String?
         get() = settings.getStringOrNull(KEY_ACCESS_TOKEN)
         set(value) {
             if (value != null) {
@@ -15,7 +15,7 @@ class LocalStorage(private val settings: Settings) {
             }
         }
 
-    var refreshToken: String?
+    internal var refreshToken: String?
         get() = settings.getStringOrNull(KEY_REFRESH_TOKEN)
         set(value) {
             if (value != null) {
@@ -25,7 +25,7 @@ class LocalStorage(private val settings: Settings) {
             }
         }
 
-    var deviceIdUser: String?
+    internal var deviceIdUser: String?
         get() = settings.getStringOrNull(KEY_USER_ID)
         set(value) {
             if (value != null) {
@@ -35,12 +35,12 @@ class LocalStorage(private val settings: Settings) {
             }
         }
 
-    fun clearTokens() {
+    internal fun clearTokens() {
         accessToken = null
         refreshToken = null
     }
 
-    companion object {
+    internal companion object {
         private const val KEY_ACCESS_TOKEN = "KEY_ACCESS_TOKEN"
         private const val KEY_REFRESH_TOKEN = "KEY_REFRESH_TOKEN"
         private const val KEY_USER_ID = "KEY_USER_ID"
