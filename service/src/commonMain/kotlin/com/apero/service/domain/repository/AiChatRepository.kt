@@ -5,7 +5,7 @@ import com.apero.service.domain.model.ChatAnswerData
 import com.apero.service.domain.model.GenImageResult
 import com.apero.service.domain.model.GenImageStyleModel
 import kotlinx.coroutines.flow.Flow
-import okio.Path
+import kotlinx.io.files.Path
 
 
 interface AiChatRepository {

@@ -64,7 +64,7 @@ suspend inline fun <reified T, reified R> HttpClient.safePost(
         }
         AiChatSDK.logger.d(AiChatSDK.TAG_FOR_DEBUG + "POST", "data: ${response.bodyAsText()}")
         if (response.status.isSuccess()) {
-            ApiResult.Success(response.body())
+            ApiResult.Success(response.body<R>())
         } else {
             response.handleErrorResponse()
         }
@@ -91,7 +91,7 @@ suspend inline fun <reified R> HttpClient.safeGet(
         }
         AiChatSDK.logger.d(AiChatSDK.TAG_FOR_DEBUG + "GET", "data: ${response.bodyAsText()}")
         if (response.status.isSuccess()) {
-            ApiResult.Success(response.body())
+            ApiResult.Success(response.body<R>())
         } else {
             response.handleErrorResponse()
         }
@@ -111,7 +111,7 @@ suspend inline fun <reified R> HttpClient.safeDelete(
     try {
         val response = delete(url)
         if (response.status.isSuccess()) {
-            ApiResult.Success(response.body())
+            ApiResult.Success(response.body<R>())
         } else {
             response.handleErrorResponse()
         }
@@ -151,7 +151,7 @@ suspend inline fun <reified R> HttpClient.safePostFile(
         }
 
         if (response.status.isSuccess()) {
-            ApiResult.Success(response.body())
+            ApiResult.Success(response.body<R>())
         } else {
             response.handleErrorResponse()
         }
@@ -176,7 +176,7 @@ suspend inline fun <reified R> HttpClient.safePatchForm(
             }))
         }
         if (response.status.isSuccess()) {
-            ApiResult.Success(response.body())
+            ApiResult.Success(response.body<R>())
         } else {
             response.handleErrorResponse()
         }
