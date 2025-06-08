@@ -15,15 +15,12 @@ import com.apero.service.domain.repository.AiChatRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.update
-import kotlinx.io.buffered
-import kotlinx.io.files.FileSystem
-import kotlinx.io.files.Path
-import kotlinx.io.readByteArray
+import okio.FileSystem
+import okio.Path
 
 internal class AiChatRepositoryImpl(
     private val aiChatService: AiChatService,
@@ -39,7 +36,9 @@ internal class AiChatRepositoryImpl(
         botCode: String
     ): ApiResult<String> {
         val fileName = file.name
-        val fileBytes = fileSystem.source(file).buffered().readByteArray()
+        val fileBytes = fileSystem.read(file) {
+            readByteArray()
+        }
         val response = aiChatService.uploadFile(
             botCode = botCode,
             fileName = fileName,
@@ -128,17 +127,10 @@ internal class AiChatRepositoryImpl(
         val chatSseResponse = chatSSEService.sendMessage(botCode, chatSeeRequest)
         chatSseResponse.distinctUntilChanged()
             .onCompletion {
-                if (it == null) trySend(ChatAnswerData.Completed(conversationId, it))
-                AiChatSDK.logger.d(
-                    AiChatSDK.TAG_FOR_DEBUG + "ChatSSE",
-                    "onCompletion $conversationId $it"
-                )
-            }
-            .catch {
                 trySend(ChatAnswerData.Completed(conversationId, it))
                 AiChatSDK.logger.d(
                     AiChatSDK.TAG_FOR_DEBUG + "ChatSSE",
-                    "catch $conversationId $it"
+                    "onCompletion $conversationId $it"
                 )
             }
             .collect { response ->

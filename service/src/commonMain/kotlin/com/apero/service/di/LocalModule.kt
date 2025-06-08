@@ -4,8 +4,8 @@ import com.apero.service.data.local.LocalStorage
 import com.apero.service.provider.DeviceIdProvider
 import com.apero.service.provider.SignatureProvider
 import com.russhwolf.settings.Settings
-import kotlinx.io.files.SystemFileSystem
-
+import okio.FileSystem
+import okio.SYSTEM
 
 internal object LocalModule {
     private val settings: Settings by lazy {
@@ -24,6 +24,6 @@ internal object LocalModule {
     }
 
     internal val fileSystem by lazy {
-        SystemFileSystem
+        FileSystem.SYSTEM
     }
 }

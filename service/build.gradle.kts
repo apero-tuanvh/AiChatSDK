@@ -78,6 +78,7 @@ kotlin {
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.multiplatform.settings)
                 implementation(libs.multiplatform.settings.no.arg)
+                implementation(libs.okio)
             }
         }
 
@@ -124,7 +125,7 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "apero-inhouse"
             artifactId = "chat-ai-sdk"
-            version = "0.0.1-alpha07"
+            version = "0.0.1-alpha09"
             from(components["kotlin"])
         }
     }
