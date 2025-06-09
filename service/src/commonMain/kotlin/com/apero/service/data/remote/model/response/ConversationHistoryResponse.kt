@@ -37,22 +37,14 @@ internal data class ConversationHistoryResponse(
 
     @Serializable
     internal data class ConversationItem(
-        @SerialName("id")
-        val id: String,
-
-        @SerialName("userId")
-        val userId: String,
-
-        @SerialName("botId")
-        val botId: String,
-
-        @SerialName("createdAt")
-        val createdAt: String,
-
-        @SerialName("updatedAt")
-        val updatedAt: String,
-
-        @SerialName("BotMessages")
-        val botMessages: List<BotMessageResponse>
+        @SerialName("id") val id: String,
+        @SerialName("userId") val userId: String,
+        @SerialName("botId") val botId: String,
+        @SerialName("createdAt") val createdAt: String,
+        @SerialName("updatedAt") val updatedAt: String,
+        @SerialName("modeId") val modeId: String? = null,
+        @SerialName("threadId") val threadId: String? = null,
+        @SerialName("idCharacter") val idCharacter: String? = null,
+        @SerialName("BotMessages") val botMessages: List<BotMessageResponse>,
     )
 }
