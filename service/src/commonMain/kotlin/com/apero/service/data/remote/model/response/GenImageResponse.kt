@@ -5,8 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal data class GenImageResponse(
-    @SerialName("success") val success: Boolean?,
-    @SerialName("message") val message: String?,
     @SerialName("data") val data: GenImageData?,
     @SerialName("timestamp") val timestamp: String?,
     @SerialName("path") val path: String?,

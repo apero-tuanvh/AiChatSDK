@@ -12,6 +12,7 @@ import com.apero.service.domain.model.ChatAnswerData
 import com.apero.service.domain.model.GenImageResult
 import com.apero.service.domain.model.GenImageStyleModel
 import com.apero.service.domain.repository.AiChatRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -135,6 +136,7 @@ internal class AiChatRepositoryImpl(
             }
             .collect { response ->
                 message += response.message
+                delay(10L)
                 trySend(ChatAnswerData.Answering(conversationId, message))
             }
 

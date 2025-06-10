@@ -13,6 +13,7 @@ import com.apero.service.logger.Logger
 object AiChatSDK {
 
     const val TAG_FOR_DEBUG = "FOR_TESTER_IN_AiChatSDK: "
+    const val DEFAULT_TIMEOUT_MS = 60_000L
 
     private var baseUrl: String? = null
     private var bundleId: String? = null

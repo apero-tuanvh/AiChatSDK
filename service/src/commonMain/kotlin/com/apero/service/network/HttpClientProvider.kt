@@ -1,10 +1,12 @@
 package com.apero.service.network
 
 import com.apero.service.AiChatSDK
+import com.apero.service.AiChatSDK.DEFAULT_TIMEOUT_MS
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngineConfig
 import io.ktor.client.engine.HttpClientEngineFactory
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -37,8 +39,13 @@ internal fun <T : HttpClientEngineConfig> createBaseHttpClient(
                 encodeDefaults = true
             })
         }
+        install(HttpTimeout) {
+            requestTimeoutMillis = DEFAULT_TIMEOUT_MS
+            connectTimeoutMillis = DEFAULT_TIMEOUT_MS
+            socketTimeoutMillis = DEFAULT_TIMEOUT_MS
+        }
         install(Logging) {
-            level = LogLevel.ALL
+            level = LogLevel.HEADERS
         }
 
         this.block()
